@@ -3,7 +3,7 @@ syntax = "proto3";
 package payment;
 option go_package = "github.com/cargod-bj/b2c-payment-api/image";
 import "github.com/cargod-bj/b2c-proto-common/common/common.proto";
-service Image {
+service Payment {
   rpc CreatePayment(AddPaymentDTO) returns (common.Response) {}
 }
 

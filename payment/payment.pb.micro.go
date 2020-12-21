@@ -34,32 +34,32 @@ var _ context.Context
 var _ client.Option
 var _ server.Option
 
-// Api Endpoints for Image service
+// Api Endpoints for Payment service
 
-func NewImageEndpoints() []*api.Endpoint {
+func NewPaymentEndpoints() []*api.Endpoint {
 	return []*api.Endpoint{}
 }
 
-// Client API for Image service
+// Client API for Payment service
 
-type ImageService interface {
+type PaymentService interface {
 	CreatePayment(ctx context.Context, in *AddPaymentDTO, opts ...client.CallOption) (*common.Response, error)
 }
 
-type imageService struct {
+type paymentService struct {
 	c    client.Client
 	name string
 }
 
-func NewImageService(name string, c client.Client) ImageService {
-	return &imageService{
+func NewPaymentService(name string, c client.Client) PaymentService {
+	return &paymentService{
 		c:    c,
 		name: name,
 	}
 }
 
-func (c *imageService) CreatePayment(ctx context.Context, in *AddPaymentDTO, opts ...client.CallOption) (*common.Response, error) {
-	req := c.c.NewRequest(c.name, "Image.CreatePayment", in)
+func (c *paymentService) CreatePayment(ctx context.Context, in *AddPaymentDTO, opts ...client.CallOption) (*common.Response, error) {
+	req := c.c.NewRequest(c.name, "Payment.CreatePayment", in)
 	out := new(common.Response)
 	err := c.c.Call(ctx, req, out, opts...)
 	if err != nil {
@@ -68,27 +68,27 @@ func (c *imageService) CreatePayment(ctx context.Context, in *AddPaymentDTO, opt
 	return out, nil
 }
 
-// Server API for Image service
+// Server API for Payment service
 
-type ImageHandler interface {
+type PaymentHandler interface {
 	CreatePayment(context.Context, *AddPaymentDTO, *common.Response) error
 }
 
-func RegisterImageHandler(s server.Server, hdlr ImageHandler, opts ...server.HandlerOption) error {
-	type image interface {
+func RegisterPaymentHandler(s server.Server, hdlr PaymentHandler, opts ...server.HandlerOption) error {
+	type payment interface {
 		CreatePayment(ctx context.Context, in *AddPaymentDTO, out *common.Response) error
 	}
-	type Image struct {
-		image
+	type Payment struct {
+		payment
 	}
-	h := &imageHandler{hdlr}
-	return s.Handle(s.NewHandler(&Image{h}, opts...))
+	h := &paymentHandler{hdlr}
+	return s.Handle(s.NewHandler(&Payment{h}, opts...))
 }
 
-type imageHandler struct {
-	ImageHandler
+type paymentHandler struct {
+	PaymentHandler
 }
 
-func (h *imageHandler) CreatePayment(ctx context.Context, in *AddPaymentDTO, out *common.Response) error {
-	return h.ImageHandler.CreatePayment(ctx, in, out)
+func (h *paymentHandler) CreatePayment(ctx context.Context, in *AddPaymentDTO, out *common.Response) error {
+	return h.PaymentHandler.CreatePayment(ctx, in, out)
 }
