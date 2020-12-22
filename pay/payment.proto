@@ -1,7 +1,7 @@
 syntax = "proto3";
 
-package payment;
-option go_package = "github.com/cargod-bj/b2c-payment-api/payment";
+package pay;
+option go_package = "github.com/cargod-bj/b2c-pay-api/pay";
 import "github.com/cargod-bj/b2c-proto-common/common/common.proto";
 service Payment {
   rpc CreatePayment(AddPaymentDTO) returns (common.Response) {}
