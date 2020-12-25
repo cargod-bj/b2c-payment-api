@@ -44,6 +44,9 @@ func NewPaymentEndpoints() []*api.Endpoint {
 
 type PaymentService interface {
 	CreatePayment(ctx context.Context, in *AddPaymentDTO, opts ...client.CallOption) (*common.Response, error)
+	Cancel(ctx context.Context, in *PayIdDTO, opts ...client.CallOption) (*common.Response, error)
+	Refund(ctx context.Context, in *RefundDTO, opts ...client.CallOption) (*common.Response, error)
+	GetPayInfo(ctx context.Context, in *PayIdDTO, opts ...client.CallOption) (*common.Response, error)
 }
 
 type paymentService struct {
@@ -68,15 +71,51 @@ func (c *paymentService) CreatePayment(ctx context.Context, in *AddPaymentDTO, o
 	return out, nil
 }
 
+func (c *paymentService) Cancel(ctx context.Context, in *PayIdDTO, opts ...client.CallOption) (*common.Response, error) {
+	req := c.c.NewRequest(c.name, "Payment.Cancel", in)
+	out := new(common.Response)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *paymentService) Refund(ctx context.Context, in *RefundDTO, opts ...client.CallOption) (*common.Response, error) {
+	req := c.c.NewRequest(c.name, "Payment.Refund", in)
+	out := new(common.Response)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *paymentService) GetPayInfo(ctx context.Context, in *PayIdDTO, opts ...client.CallOption) (*common.Response, error) {
+	req := c.c.NewRequest(c.name, "Payment.GetPayInfo", in)
+	out := new(common.Response)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // Server API for Payment service
 
 type PaymentHandler interface {
 	CreatePayment(context.Context, *AddPaymentDTO, *common.Response) error
+	Cancel(context.Context, *PayIdDTO, *common.Response) error
+	Refund(context.Context, *RefundDTO, *common.Response) error
+	GetPayInfo(context.Context, *PayIdDTO, *common.Response) error
 }
 
 func RegisterPaymentHandler(s server.Server, hdlr PaymentHandler, opts ...server.HandlerOption) error {
 	type payment interface {
 		CreatePayment(ctx context.Context, in *AddPaymentDTO, out *common.Response) error
+		Cancel(ctx context.Context, in *PayIdDTO, out *common.Response) error
+		Refund(ctx context.Context, in *RefundDTO, out *common.Response) error
+		GetPayInfo(ctx context.Context, in *PayIdDTO, out *common.Response) error
 	}
 	type Payment struct {
 		payment
@@ -91,4 +130,16 @@ type paymentHandler struct {
 
 func (h *paymentHandler) CreatePayment(ctx context.Context, in *AddPaymentDTO, out *common.Response) error {
 	return h.PaymentHandler.CreatePayment(ctx, in, out)
+}
+
+func (h *paymentHandler) Cancel(ctx context.Context, in *PayIdDTO, out *common.Response) error {
+	return h.PaymentHandler.Cancel(ctx, in, out)
+}
+
+func (h *paymentHandler) Refund(ctx context.Context, in *RefundDTO, out *common.Response) error {
+	return h.PaymentHandler.Refund(ctx, in, out)
+}
+
+func (h *paymentHandler) GetPayInfo(ctx context.Context, in *PayIdDTO, out *common.Response) error {
+	return h.PaymentHandler.GetPayInfo(ctx, in, out)
 }

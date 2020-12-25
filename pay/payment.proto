@@ -5,6 +5,9 @@ option go_package = "github.com/cargod-bj/b2c-pay-api/pay";
 import "github.com/cargod-bj/b2c-proto-common/common/common.proto";
 service Payment {
   rpc CreatePayment(AddPaymentDTO) returns (common.Response) {}
+  rpc Cancel(PayIdDTO) returns (common.Response) {}
+  rpc Refund(RefundDTO) returns (common.Response) {}
+  rpc GetPayInfo(PayIdDTO) returns (common.Response) {}
 }
 
 message AddPaymentDTO{
@@ -15,8 +18,20 @@ message AddPaymentDTO{
   string channel = 5;
 }
 
+message PayIdDTO{
+  string sourceId = 1;
+  string channel = 5;
+}
+
+message RefundDTO{
+  string sourceId = 1;
+  string amount = 2;
+  string currency = 3;
+  string channel = 4;
+}
+
 message PaymentInfoDTO{
   string paymentUrl = 1;
-  uint64 paymentNo  = 2;
-  uint32 status     = 3;
+  uint64 paymentNo = 2;
+  uint32 status = 3;
 }
