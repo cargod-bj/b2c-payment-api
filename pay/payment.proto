@@ -29,6 +29,7 @@ message RefundDTO{
   string amount = 2;
   string currency = 3;
   string channel = 4;
+  uint64 payNo = 5;
 }
 
 message PaymentInfoDTO{
