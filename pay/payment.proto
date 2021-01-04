@@ -16,6 +16,7 @@ message AddPaymentDTO{
   string currency = 3;
   int64  ExpiresAt = 4;
   string channel = 5;
+  string returnUrl = 6;
 }
 
 message PayIdDTO{
